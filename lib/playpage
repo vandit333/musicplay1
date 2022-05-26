@@ -1,0 +1,49 @@
+
+import 'package:audioplayers/audioplayers.dart';
+import 'package:flutter/material.dart';
+import 'package:on_audio_query/on_audio_query.dart';
+
+class playpage extends StatefulWidget {
+  SongModel? currentsong;
+
+  playpage(this.currentsong);
+
+  @override
+  State<playpage> createState() => _playpageState();
+}
+
+class _playpageState extends State<playpage> {
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    audioPlayer.stop().then((value) {
+      
+    });
+  }
+  AudioPlayer audioPlayer = AudioPlayer();
+  bool play=false;
+
+  @override
+
+  Widget build(BuildContext context) {
+    return Scaffold(appBar: AppBar(),
+    body: Column(
+      children: [
+        ListTile(title: Text(widget.currentsong!.title),),
+        ListTile(title: Text(widget.currentsong!.displayName),),
+        play?IconButton(onPressed: () {
+          String localPath=widget.currentsong!.data;
+          audioPlayer.play(localPath,isLocal: true).then((value) {
+
+          });
+        }, icon: Icon(Icons.play_arrow)):IconButton(onPressed: () {
+          audioPlayer.pause().then((value) {
+
+          });
+        }, icon: Icon(Icons.stop)),
+      ],
+    ),
+    );
+  }
+}
