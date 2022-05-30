@@ -23,21 +23,23 @@ class _musicplayState extends State<musicplay> {
     // OrderType.ASC_OR_SMALLER,
     // UriType.EXTERNAL,
     songlist = await _audioQuery.querySongs();
-    getdata=true;
-  }
+    setState((){
+      getdata=true;
+    });
 
+  }
   permission()
   async {
     if (await Permission.contacts.request().isGranted) {
-  // Either the permission was already granted before or the user just granted it.
-  }
+      // Either the permission was already granted before or the user just granted it.
+    }
 
 // You can request multiple permissions at once.
     Map<Permission, PermissionStatus> statuses = await [
-    Permission.location,
-    Permission.storage,
+      Permission.location,
+      Permission.storage,
     ].request();
-  print(statuses[Permission.location]);
+    print(statuses[Permission.location]);
 
     var status = await Permission.camera.status;
     if (status.isDenied) {
@@ -58,6 +60,12 @@ class _musicplayState extends State<musicplay> {
     someName();
     permission();
   }
+  String _printDuration(Duration duration) {
+    String twoDigits(int n) => n.toString().padLeft(2, "0");
+    String twoDigitMinutes = twoDigits(duration.inMinutes.remainder(60));
+    String twoDigitSeconds = twoDigits(duration.inSeconds.remainder(60));
+    return "${twoDigits(duration.inHours)}:$twoDigitMinutes:$twoDigitSeconds";
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -66,10 +74,10 @@ class _musicplayState extends State<musicplay> {
       return ListTile(
         title: Text("${songlist[index].title}",style: TextStyle(color: Colors.blueGrey)),
         subtitle: Text("${songlist[index].displayName}"),
-
+        trailing: Text(_printDuration(Duration(microseconds: songlist[index].duration!))),
         onTap: (){
           Navigator.push(context,MaterialPageRoute(builder: (context) {
-            return playpage(songlist[index]);
+            return playpage(songlist,index);
           },));
         },
 
